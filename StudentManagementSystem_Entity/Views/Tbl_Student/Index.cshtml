@@ -4,14 +4,16 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Students Details</h2>
 <p>
     @using (Html.BeginForm("Index", "Tbl_Student", FormMethod.Get))
     {
         <b>Search by Department</b>
         @Html.DropDownList("Dept", ViewBag.dept as List<SelectListItem>, "Select Department", new { style = "width: 200px;" })
+        <b>Search by Course</b>
+        @Html.DropDownList("Course", new SelectList(string.Empty, "Value", "Text"), "Select course", new { style = "width: 200px;" })
         <input type="submit" value="Search" />
-
+    
     }
 </p>
 <p>
@@ -64,3 +66,31 @@
     }
 
 </table>
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#Dept").change(function () {
+            $("#Course").empty();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("getCourse")',
+                dataType: 'json',
+                data: { id: $("#Dept").val() },
+                success: function (course) {
+                    $.each(course, function (i, course) {
+                        $("#Course").append('<option value="' + course.Value + '">' + course.Text + '</option>');
+
+                    });
+                },
+                error: function (ex) {
+                    alert('Failed to retrieve Departments Course .' + ex);
+                }
+            });
+            return false;
+        })
+    });
+
+</script>

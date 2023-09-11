@@ -13,7 +13,27 @@ namespace StudentManagementSystem_Entity.Controllers
     public class Tbl_StudentController : Controller
     {
         private StudEntities db = new StudEntities();
+        public ActionResult Login()
+        {
 
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Login(Tbl_Student student)
+        {
+            var row = db.Tbl_Student.Where(x => x.Stud_name == student.Stud_name && x.Email == student.Email);
+
+            if (row == null)
+            {
+                ViewBag.LoginMessage = "<script>alert('Invalid credentials')</script>";
+                return View();
+            }
+            else
+            {
+                ViewBag.LoginMessage = "<script>alert('Login Successful')</script>";
+                return RedirectToAction("Index");
+            }
+        }
         // GET: Tbl_Student
         //public ActionResult Index()
         //{
